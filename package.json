@@ -1,0 +1,32 @@
+{
+  "name": "cqrs-playground",
+  "version": "0.0.0",
+  "description": "playing cqrs pattern",
+  "author": "Jakub Gałecki",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "dev": "nodemon src/main.mjs",
+    "lint:fix": "standard --fix",
+    "test": "tap"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.7",
+    "standard": "^17.0.0",
+    "tap": "^16.3.4"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/swagger-ui": "^1.6.0",
+    "fastify": "^4.15.0"
+  },
+  "lint-staged": {
+    "*.mjs": "standard",
+    "*.json,*.md": "prettier --write"
+  }
+}
