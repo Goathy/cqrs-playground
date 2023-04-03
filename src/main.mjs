@@ -12,6 +12,8 @@ await server.register(import('@fastify/swagger-ui'), {
 })
 
 await server.register(import('./route.mjs'))
+await server.register(import('./database.mjs'), { database: 'dev.sqlite' })
+await server.register(import('./authentication/controller.mjs'))
 
 await server.listen({ port: 3000, host: '0.0.0.0' })
 
