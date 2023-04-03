@@ -1,4 +1,4 @@
-import { register } from './functions.mjs'
+import { createUser } from './functions.mjs'
 import { registerSchema } from './schema.mjs'
 
 /**
@@ -15,8 +15,19 @@ export default async function (app) {
       }
     }
   }, async (req, reply) => {
-    await register(app, req.body)
+    const { password, confirmPassword } = req.body
+    // TODO: Check if customer already exist
 
-    await reply.code(201).send()
+    if (password !== confirmPassword) {
+      return reply.code(400).send({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'body/password and body/confirmPassword must match each others'
+      })
+    }
+
+    // TODO: Use postgrator to run migration during tests https://github.com/rickbergfalk/postgrator
+    /* const user = */ await createUser(req.body)
+    return reply.code(201).send()
   })
 }

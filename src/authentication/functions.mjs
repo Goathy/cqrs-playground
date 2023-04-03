@@ -1,9 +1,11 @@
-import { sql } from '@databases/sqlite'
-import { randomUUID as uuid } from 'node:crypto'
-export async function register ({ db }, { email, password, firstName, lastName }) {
-  await db.tx(async (tx) => {
-    await tx.query(sql`
-    INSERT INTO users (id, email, password, first_name, last_name) 
-    VALUES (${uuid()}, ${email}, ${password.toString('hex')}, ${firstName}, ${lastName})`)
-  })
+import { randomBytes, scrypt as cscrypt } from 'node:crypto'
+import { promisify } from 'node:util'
+
+const scrypt = promisify(cscrypt)
+
+export async function createUser ({ password, ...rest }) {
+  const salt = randomBytes(16).toString('hex').slice(0, 16)
+  const hash = await scrypt(password, salt, 32)
+
+  return Object.assign(rest, { password: `${salt}:${hash.toString('hex')}` })
 }
