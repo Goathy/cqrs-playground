@@ -1,5 +1,8 @@
+'use strict'
+
 import { test } from 'tap'
 import { createUser } from './create-user.mjs'
+import PASSWORD_REGEX from '../../../tests/utils/password.mjs'
 
 test('create user object', async ({ plan, same, match }) => {
   plan(2)
@@ -8,7 +11,7 @@ test('create user object', async ({ plan, same, match }) => {
 
   const { password: gotPassword, ...got } = await createUser(input)
 
-  match(gotPassword, /^[0-9a-z]{16}:[0-9a-z]{64}$/, 'password do not match specified shape')
+  match(gotPassword, PASSWORD_REGEX, 'password do not match specified shape')
   same(got, {
     email: 'joe.doe@mail.co',
     firstName: 'Joe',
