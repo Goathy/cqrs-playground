@@ -13,19 +13,20 @@ export default async function (app) {
       response: {
         201: {}
       }
+    },
+    preHandler: async (req, reply) => {
+      const { password, confirmPassword } = req.body
+      // TODO: Check if customer already exist
+
+      if (password !== confirmPassword) {
+        return reply.code(400).send({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'body/password and body/confirmPassword must match each others'
+        })
+      }
     }
   }, async (req, reply) => {
-    const { password, confirmPassword } = req.body
-    // TODO: Check if customer already exist
-
-    if (password !== confirmPassword) {
-      return reply.code(400).send({
-        statusCode: 400,
-        error: 'Bad Request',
-        message: 'body/password and body/confirmPassword must match each others'
-      })
-    }
-
     // TODO: Use postgrator to run migration during tests https://github.com/rickbergfalk/postgrator
     /* const user = */ await createUser(req.body)
     return reply.code(201).send()
