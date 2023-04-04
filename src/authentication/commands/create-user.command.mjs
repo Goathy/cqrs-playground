@@ -2,7 +2,7 @@
 
 import { sql } from '@databases/sqlite'
 import { randomUUID as uid } from 'node:crypto'
-import { createUser } from '../create-user.mjs'
+import { createUser } from '../domain/create-user.mjs'
 
 export async function createUserCommand (db, body) {
   await db.tx(async (tx) => {
