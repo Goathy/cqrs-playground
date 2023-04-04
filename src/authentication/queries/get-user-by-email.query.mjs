@@ -15,9 +15,7 @@ export async function getUserByEmailQuery (db, email) {
 `)
   })
 
-  console.log('debug: ', user)
-
-  return {}
+  return user
 }
 
 export default getUserByEmailQuery
