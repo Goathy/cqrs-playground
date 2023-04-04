@@ -1,3 +1,5 @@
+'use strict'
+
 import fastify from 'fastify'
 import process from 'node:process'
 
