@@ -56,7 +56,7 @@ export default async function (app) {
         return reply.code(400).send({
           statusCode: 400,
           error: 'Bad Request',
-          message: 'body properties \'password\' and \'confirmPassword\' do not match with each others'
+          message: "body properties 'password' and 'confirmPassword' do not match with each others"
         })
       }
     }

@@ -114,8 +114,8 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
       }
     })
 
-    equal(response.statusCode, 400, 'missing \'email\' property')
-    equal(response.json().message, 'body must have required property \'email\'', 'error message')
+    equal(response.statusCode, 400, "missing 'email' property")
+    equal(response.json().message, "body must have required property 'email'", 'error message')
   }
 
   {
@@ -130,8 +130,8 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
       }
     })
 
-    equal(response.statusCode, 400, 'missing \'password\' property')
-    equal(response.json().message, 'body must have required property \'password\'', 'error message')
+    equal(response.statusCode, 400, "missing 'password' property")
+    equal(response.json().message, "body must have required property 'password'", 'error message')
   }
 
   {
@@ -146,8 +146,8 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
       }
     })
 
-    equal(response.statusCode, 400, 'missing \'confirmPassword\' property')
-    equal(response.json().message, 'body must have required property \'confirmPassword\'', 'error message')
+    equal(response.statusCode, 400, "missing 'confirmPassword' property")
+    equal(response.json().message, "body must have required property 'confirmPassword'", 'error message')
   }
 
   {
@@ -162,8 +162,8 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
       }
     })
 
-    equal(response.statusCode, 400, 'missing \'firstName\' property')
-    equal(response.json().message, 'body must have required property \'firstName\'', 'error message')
+    equal(response.statusCode, 400, "missing 'firstName' property")
+    equal(response.json().message, "body must have required property 'firstName'", 'error message')
   }
 
   {
@@ -178,8 +178,8 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
       }
     })
 
-    equal(response.statusCode, 400, 'missing \'lastName\' property')
-    equal(response.json().message, 'body must have required property \'lastName\'', 'error message')
+    equal(response.statusCode, 400, "missing 'lastName' property")
+    equal(response.json().message, "body must have required property 'lastName'", 'error message')
   }
 })
 
@@ -209,6 +209,6 @@ test('create user | passwords does not match', async ({ teardown, plan, equal })
     }
   })
 
-  equal(response.statusCode, 400, 'passwords do not match')
-  equal(response.json().message, 'body properties \'password\' and \'confirmPassword\' do not match with each others', 'error message')
+  equal(response.statusCode, 400, "'password' and 'confirmPassword' do not match")
+  equal(response.json().message, "body properties 'password' and 'confirmPassword' do not match with each others", 'error message')
 })
