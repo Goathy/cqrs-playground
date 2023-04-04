@@ -2,23 +2,22 @@
 
 import { sql } from '@databases/sqlite'
 import { unlink } from 'fs/promises'
-import { test } from 'tap'
+import { test, beforeEach, afterEach } from 'tap'
 import { buildServer } from '../utils/build-server.mjs'
 import UUID_REGEX from '../utils/uuid.mjs'
 import PASSWORD_REGEX from '../utils/password.mjs'
 import { runMigration, TEST_DATABASE } from '../utils/migration.mjs'
 
+beforeEach(async () => { await runMigration() })
+
+afterEach(async () => { await unlink(TEST_DATABASE) })
+
 test('create user', async ({ teardown, plan, equal, same, match }) => {
   plan(4)
 
-  await runMigration()
-
   const app = await buildServer()
 
-  teardown(async () => {
-    await app.close()
-    await unlink(TEST_DATABASE)
-  })
+  teardown(() => app.close())
 
   await app.register(import('../../src/authentication/plugin.mjs'))
 
@@ -50,14 +49,9 @@ test('create user', async ({ teardown, plan, equal, same, match }) => {
 test('create user | user already exists', async ({ teardown, plan, equal }) => {
   plan(1)
 
-  await runMigration()
-
   const app = await buildServer()
 
-  teardown(async () => {
-    await app.close()
-    await unlink(TEST_DATABASE)
-  })
+  teardown(() => app.close())
 
   await app.register(import('../../src/authentication/plugin.mjs'))
 
@@ -91,14 +85,9 @@ test('create user | user already exists', async ({ teardown, plan, equal }) => {
 test('create user | missing required field', async ({ teardown, plan, equal }) => {
   plan(10)
 
-  await runMigration()
-
   const app = await buildServer()
 
-  teardown(async () => {
-    await app.close()
-    await unlink(TEST_DATABASE)
-  })
+  teardown(() => app.close())
 
   await app.register(import('../../src/authentication/plugin.mjs'))
 
@@ -186,14 +175,9 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
 test('create user | passwords does not match', async ({ teardown, plan, equal }) => {
   plan(2)
 
-  await runMigration()
-
   const app = await buildServer()
 
-  teardown(async () => {
-    await app.close()
-    await unlink(TEST_DATABASE)
-  })
+  teardown(() => app.close())
 
   await app.register(import('../../src/authentication/plugin.mjs'))
 
