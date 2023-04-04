@@ -1,4 +1,4 @@
-import { createUser } from './create-user.mjs'
+import createUserCommand from './commands/create-user.command.mjs'
 import { registerSchema } from './schema.mjs'
 
 /**
@@ -28,7 +28,8 @@ export default async function (app) {
     }
   }, async (req, reply) => {
     // TODO: Use postgrator to run migration during tests https://github.com/rickbergfalk/postgrator
-    /* const user = */ await createUser(req.body)
+
+    await createUserCommand(app.db, req.body)
     return reply.code(201).send()
   })
 }
