@@ -1,8 +1,8 @@
 'use strict'
 
-import createUserCommand from './commands/create-user.command.mjs'
-import getUserByEmailQuery from './queries/get-user-by-email.query.mjs'
-import { createUserSchema } from './schemas/create-user.schema.mjs'
+import createUserCommand from '../commands/create-user.command.mjs'
+import getUserByEmailQuery from '../queries/get-user-by-email.query.mjs'
+import { createUserSchema } from '../schemas/create-user.schema.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
