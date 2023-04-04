@@ -56,14 +56,13 @@ export default async function (app) {
         return reply.code(400).send({
           statusCode: 400,
           error: 'Bad Request',
-          message: 'body/password and body/confirmPassword must match each others'
+          message: 'body properties \'password\' and \'confirmPassword\' do not match with each others'
         })
       }
     }
   }, async (req, reply) => {
-    // TODO: Use postgrator to run migration during tests https://github.com/rickbergfalk/postgrator
-
     await createUserCommand(app.db, req.body)
+
     return reply.code(201).send()
   })
 }
