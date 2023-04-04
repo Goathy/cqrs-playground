@@ -1,4 +1,5 @@
 import createUserCommand from './commands/create-user.command.mjs'
+import getUserByEmailQuery from './queries/get-user-by-email.query.mjs'
 import { registerSchema } from './schema.mjs'
 
 /**
@@ -15,8 +16,17 @@ export default async function (app) {
       }
     },
     preHandler: async (req, reply) => {
-      const { password, confirmPassword } = req.body
-      // TODO: Check if customer already exist
+      const { password, confirmPassword, email } = req.body
+
+      const exists = await getUserByEmailQuery(app.db, email)
+
+      if (exists !== undefined) {
+        return reply.code(409).send({
+          statusCode: 409,
+          error: 'Conflict',
+          message: 'cannot create user account'
+        })
+      }
 
       if (password !== confirmPassword) {
         return reply.code(400).send({
