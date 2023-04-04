@@ -1,7 +1,7 @@
 import { test } from 'tap'
-import { createUser } from './functions.mjs'
+import { createUser } from './create-user.mjs'
 
-test('createUser', async ({ plan, same, match }) => {
+test('create user object', async ({ plan, same, match }) => {
   plan(2)
 
   const input = { email: 'joe.doe@mail.co', password: 'p4ssw0rd1!', firstName: 'Joe', lastName: 'Doe' }

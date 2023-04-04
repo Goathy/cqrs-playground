@@ -1,4 +1,4 @@
-import { createUser } from './functions.mjs'
+import { createUser } from './create-user.mjs'
 import { registerSchema } from './schema.mjs'
 
 /**
