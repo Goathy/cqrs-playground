@@ -1,3 +1,5 @@
+'use strict'
+
 import { S } from 'fluent-json-schema'
 
 export const registerSchema = S.object()

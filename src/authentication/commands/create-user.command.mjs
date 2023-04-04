@@ -1,3 +1,5 @@
+'use strict'
+
 import { sql } from '@databases/sqlite'
 import { randomUUID as uid } from 'node:crypto'
 import { createUser } from '../create-user.mjs'

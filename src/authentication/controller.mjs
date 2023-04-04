@@ -1,3 +1,5 @@
+'use strict'
+
 import createUserCommand from './commands/create-user.command.mjs'
 import getUserByEmailQuery from './queries/get-user-by-email.query.mjs'
 import { registerSchema } from './schema.mjs'

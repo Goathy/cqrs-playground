@@ -1,3 +1,5 @@
+'use strict'
+
 import { sql } from '@databases/sqlite'
 
 export async function getUserByEmailQuery (db, email) {

@@ -1,3 +1,5 @@
+'use strict'
+
 import { randomBytes, scrypt as cscrypt } from 'node:crypto'
 import { promisify } from 'node:util'
 

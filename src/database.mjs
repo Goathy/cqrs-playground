@@ -1,5 +1,8 @@
+'use strict'
+
 import connect from '@databases/sqlite'
 import fp from 'fastify-plugin'
+
 /**
  * @param {import('fastify').FastifyInstance} app
  */
