@@ -38,21 +38,20 @@ test('get user', async ({ teardown, plan, match, same }) => {
   })
 })
 
-// test('get user | invalid command', async ({ teardown, plan, equal }) => {
-//   plan(1)
+test('get user | invalid command', async ({ teardown, plan, equal }) => {
+  plan(1)
 
-//   const db = await prepare()
+  const db = await prepare()
 
-//   teardown(async () => {
-//     await db.dispose()
-//     await clean()
-//   })
+  teardown(async () => {
+    await db.dispose()
+    await clean()
+  })
 
-//   const body = { email: 'joe.doe@mail.co', password: 'p4ssw0rd1!', confirmPassword: 'p4ssw0rd1!', firstName: 'Joe', lastName: 'Doe' }
-
-//   try {
-//     await createUserHandler(db, body)
-//   } catch (error) {
-//     equal('invalid command', error.message, 'error message should match')
-//   }
-// })
+  const query = { email: 'joe.doe@mail.co' }
+  try {
+    await getUserByEmailHandler(db, query)
+  } catch (error) {
+    equal('invalid query', error.message, 'error message should match')
+  }
+})
