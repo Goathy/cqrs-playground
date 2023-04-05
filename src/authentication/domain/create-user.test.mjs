@@ -11,7 +11,7 @@ test('create user object', async ({ plan, same, match }) => {
 
   const { password: gotPassword, ...got } = await createUser(input)
 
-  match(gotPassword, PASSWORD_REGEX, 'password do not match specified shape')
+  match(gotPassword, PASSWORD_REGEX, 'incorrect password format')
   same(got, {
     email: 'joe.doe@mail.co',
     firstName: 'Joe',

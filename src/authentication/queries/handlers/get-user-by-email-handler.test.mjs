@@ -29,8 +29,8 @@ test('get user', async ({ teardown, plan, match, same }) => {
 
   const { id, password, ...user } = await getUserByEmailHandler(db, query)
 
-  match(id, UUID_REGEX, 'id should be in uuid v4 format')
-  match(password, PASSWORD_REGEX, 'password do not match specified shape')
+  match(id, UUID_REGEX, 'expect uuid format')
+  match(password, PASSWORD_REGEX, 'incorrect password format')
   same(user, {
     email: 'joe.doe@mail.co',
     firstName: 'Joe',
