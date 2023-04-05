@@ -10,7 +10,7 @@ import { createUserHandler } from '../../commands/handlers/create-user.handler.m
 import { getUserByEmailHandler } from './get-user-by-email.handler.mjs'
 
 test('get user', async ({ teardown, plan, match, same }) => {
-  // plan(3)
+  plan(3)
 
   const db = await prepare()
 
