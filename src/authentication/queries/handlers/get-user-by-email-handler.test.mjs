@@ -1,7 +1,7 @@
 'use strict'
 
 import { test } from 'tap'
-import { clean, prepare } from '../../../../tests/utils/migration.mjs'
+import { clean, prepare } from '../../../../tests/utils/prepare-database.mjs'
 import PASSWORD_REGEX from '../../../../tests/utils/password.mjs'
 import UUID_REGEX from '../../../../tests/utils/uuid.mjs'
 import { createUserCommand } from '../../commands/implementations/create-user.command.mjs'

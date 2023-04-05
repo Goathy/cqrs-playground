@@ -1,16 +1,15 @@
 'use strict'
 
 import { sql } from '@databases/sqlite'
-import { unlink } from 'fs/promises'
-import { test, beforeEach, afterEach } from 'tap'
+import { afterEach, beforeEach, test } from 'tap'
 import { buildServer } from '../utils/build-server.mjs'
-import UUID_REGEX from '../utils/uuid.mjs'
 import PASSWORD_REGEX from '../utils/password.mjs'
-import { runMigration, TEST_DATABASE } from '../utils/migration.mjs'
+import { clean, prepare } from '../utils/prepare-database.mjs'
+import UUID_REGEX from '../utils/uuid.mjs'
 
-beforeEach(async () => { await runMigration() })
+beforeEach(async () => { await prepare() })
 
-afterEach(async () => { await unlink(TEST_DATABASE) })
+afterEach(async () => { await clean() })
 
 test('create user', async ({ teardown, plan, equal, same, match }) => {
   plan(4)

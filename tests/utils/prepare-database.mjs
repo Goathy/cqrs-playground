@@ -6,22 +6,16 @@ import connect from '@databases/sqlite'
 import { unlink } from 'node:fs/promises'
 import { randomBytes } from 'node:crypto'
 
-export const TEST_DATABASE = join(tmpdir(), 'test.sqlite')
-
 const FILE_NAME = randomBytes(10).toString('hex')
-const PATH = join(tmpdir(), `${FILE_NAME}.sqlite`)
+export const TEST_DATABASE = join(tmpdir(), `${FILE_NAME}.sqlite`)
 
 const exec = promisify(cexec)
 
-export async function runMigration () {
-  await exec(`yarn postgrator --database ${TEST_DATABASE}`)
-}
-
 export async function prepare () {
-  await exec(`yarn postgrator --database ${PATH}`)
-  return connect(PATH)
+  await exec(`yarn postgrator --database ${TEST_DATABASE}`)
+  return connect(TEST_DATABASE)
 }
 
 export async function clean () {
-  await unlink(PATH)
+  await unlink(TEST_DATABASE)
 }

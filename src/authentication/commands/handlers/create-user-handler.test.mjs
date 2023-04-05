@@ -2,7 +2,7 @@
 
 import { sql } from '@databases/sqlite'
 import { test } from 'tap'
-import { clean, prepare } from '../../../../tests/utils/migration.mjs'
+import { clean, prepare } from '../../../../tests/utils/prepare-database.mjs'
 import { createUserCommand } from '../implementations/create-user.command.mjs'
 import { createUserHandler } from './create-user.handler.mjs'
 import UUID_REGEX from '../../../../tests/utils/uuid.mjs'
