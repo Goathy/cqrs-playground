@@ -1,8 +1,10 @@
 'use strict'
 
-import createUserCommand from '../commands/create-user.command.mjs'
-import getUserByEmailQuery from '../queries/get-user-by-email.query.mjs'
+import { createUserHandler } from '../commands/handlers/create-user.handler.mjs'
+import { createUserCommand } from '../commands/implementations/create-user.command.mjs'
 import { createUserSchema } from '../schemas/create-user.schema.mjs'
+import { getUserByEmailQuery } from '../queries/implementations/get-user-by-email.query.mjs'
+import { getUserByEmailHandler } from '../queries/handlers/get-user-by-email.handler.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
@@ -42,7 +44,8 @@ export default async function (app) {
     preHandler: async (req, reply) => {
       const { password, confirmPassword, email } = req.body
 
-      const exists = await getUserByEmailQuery(app.db, email)
+      const query = getUserByEmailQuery(email)
+      const exists = await getUserByEmailHandler(app.db, query)
 
       if (exists !== undefined) {
         return reply.code(409).send({
@@ -61,7 +64,8 @@ export default async function (app) {
       }
     }
   }, async (req, reply) => {
-    await createUserCommand(app.db, req.body)
+    const command = createUserCommand(req.body)
+    await createUserHandler(app.db, command)
 
     return reply.code(201).send()
   })
