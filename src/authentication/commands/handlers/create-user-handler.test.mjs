@@ -35,7 +35,7 @@ test('create user', async ({ teardown, plan, match, same }) => {
   })
 })
 
-test('create user | invalid command', async ({ teardown, plan, pass, fail }) => {
+test('create user | invalid command', async ({ teardown, plan, equal }) => {
   plan(1)
 
   const db = await prepare()
@@ -49,12 +49,7 @@ test('create user | invalid command', async ({ teardown, plan, pass, fail }) => 
 
   try {
     await createUserHandler(db, body)
-    fail('should throw error')
   } catch (error) {
-    if (error instanceof Error) {
-      pass('should throw an error')
-    } else {
-      fail('should throw error')
-    }
+    equal('invalid command', error.message, 'error message should match')
   }
 })
