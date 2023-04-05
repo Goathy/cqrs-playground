@@ -1,7 +1,7 @@
 'use strict'
 
 import fastify from 'fastify'
-import { TEST_DATABASE } from './migration.mjs'
+import { TEST_DATABASE } from './prepare-database.mjs'
 
 export async function buildServer () {
   const app = fastify()

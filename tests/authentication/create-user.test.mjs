@@ -1,16 +1,15 @@
 'use strict'
 
 import { sql } from '@databases/sqlite'
-import { unlink } from 'fs/promises'
-import { test, beforeEach, afterEach } from 'tap'
+import { afterEach, beforeEach, test } from 'tap'
 import { buildServer } from '../utils/build-server.mjs'
-import UUID_REGEX from '../utils/uuid.mjs'
 import PASSWORD_REGEX from '../utils/password.mjs'
-import { runMigration, TEST_DATABASE } from '../utils/migration.mjs'
+import { clean, prepare } from '../utils/prepare-database.mjs'
+import UUID_REGEX from '../utils/uuid.mjs'
 
-beforeEach(async () => { await runMigration() })
+beforeEach(async () => { await prepare() })
 
-afterEach(async () => { await unlink(TEST_DATABASE) })
+afterEach(async () => { await clean() })
 
 test('create user', async ({ teardown, plan, equal, same, match }) => {
   plan(4)
@@ -33,12 +32,12 @@ test('create user', async ({ teardown, plan, equal, same, match }) => {
     }
   })
 
-  equal(response.statusCode, 201, 'succesfully created user account')
+  equal(response.statusCode, 201, 'user account created')
 
   const [{ id, password, ...user }] = await app.db.query(sql`SELECT * FROM users`)
 
-  match(id, UUID_REGEX, 'id should be in uuid v4 format')
-  match(password, PASSWORD_REGEX, 'password do not match specified shape')
+  match(id, UUID_REGEX, 'expect uuid format')
+  match(password, PASSWORD_REGEX, 'incorrect password format')
   same(user, {
     email: 'joe.doe@mail.co',
     first_name: 'Joe',
