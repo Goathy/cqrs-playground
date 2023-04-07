@@ -2,6 +2,7 @@
 
 import fastify from 'fastify'
 import process from 'node:process'
+import errorHandler from './common/errors/error.handler.mjs'
 
 const server = fastify({ logger: true })
 
@@ -12,6 +13,8 @@ await server.register(import('@fastify/swagger-ui'), {
     docExpansion: 'full'
   }
 })
+
+server.setErrorHandler(errorHandler)
 
 await server.register(import('./route.mjs'))
 await server.register(import('./database.mjs'), { database: 'dev.sqlite' })
