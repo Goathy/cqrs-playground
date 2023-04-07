@@ -3,7 +3,7 @@
 import { sql } from '@databases/sqlite'
 import { GetUserByEmailQuery } from '../implementations/get-user-by-email.query.mjs'
 
-export async function getUserByEmailHandler (db, query) {
+export async function getUserByEmailHandler ({ db }, query) {
   if (query instanceof GetUserByEmailQuery === false) {
     throw new Error('invalid query')
   }

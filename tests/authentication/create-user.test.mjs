@@ -2,23 +2,24 @@
 
 import { sql } from '@databases/sqlite'
 import { afterEach, beforeEach, test } from 'tap'
-import { buildServer } from '../utils/build-server.mjs'
+import { buildTestServer } from '../utils/build-server.mjs'
 import PASSWORD_REGEX from '../utils/password.mjs'
-import { clean, prepare } from '../utils/prepare-database.mjs'
-import UUID_REGEX from '../utils/uuid.mjs'
+import { TEST_DATABASE, clean, prepare } from '../utils/prepare-database.mjs'
 
 beforeEach(async () => { await prepare() })
 
 afterEach(async () => { await clean() })
 
 test('create user', async ({ teardown, plan, equal, same, match }) => {
-  plan(4)
+  plan(3)
 
-  const app = await buildServer()
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
 
   teardown(() => app.close())
-
-  await app.register(import('../../src/authentication/plugin.mjs'))
 
   const response = await app.inject({
     url: '/register',
@@ -34,25 +35,29 @@ test('create user', async ({ teardown, plan, equal, same, match }) => {
 
   equal(response.statusCode, 201, 'user account created')
 
-  const [{ id, password, ...user }] = await app.db.query(sql`SELECT * FROM users`)
+  const [{ password, ...user }] = await app.db.query(sql`SELECT * FROM users`)
 
-  match(id, UUID_REGEX, 'expect uuid format')
   match(password, PASSWORD_REGEX, 'incorrect password format')
+
   same(user, {
+    id: 'b9f310bc-bd77-4734-ad91-6b6b8b490665',
     email: 'joe.doe@mail.co',
     first_name: 'Joe',
     last_name: 'Doe'
   })
 })
 
-test('create user | user already exists', async ({ teardown, plan, equal }) => {
-  plan(1)
+test('create user | user already exists', async ({ teardown, plan, equal, same }) => {
+  plan(2)
 
-  const app = await buildServer()
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
 
   teardown(() => app.close())
-
-  await app.register(import('../../src/authentication/plugin.mjs'))
 
   await app.inject({
     url: '/register',
@@ -78,17 +83,24 @@ test('create user | user already exists', async ({ teardown, plan, equal }) => {
     }
   })
 
-  equal(response.statusCode, 409, 'user already exist')
+  equal(response.statusCode, 400, 'user already exists')
+
+  same(response.json(), {
+    code: 'USER_ALREADY_REGISTERED',
+    message: 'user with id=b9f310bc-bd77-4734-ad91-6b6b8b490665 is already registered'
+  })
 })
 
 test('create user | missing required field', async ({ teardown, plan, equal }) => {
   plan(10)
 
-  const app = await buildServer()
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
 
   teardown(() => app.close())
-
-  await app.register(import('../../src/authentication/plugin.mjs'))
 
   {
     const response = await app.inject({
@@ -103,6 +115,7 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
     })
 
     equal(response.statusCode, 400, "missing 'email' property")
+
     equal(response.json().message, "body must have required property 'email'", 'error message')
   }
 
@@ -119,6 +132,7 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
     })
 
     equal(response.statusCode, 400, "missing 'password' property")
+
     equal(response.json().message, "body must have required property 'password'", 'error message')
   }
 
@@ -135,6 +149,7 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
     })
 
     equal(response.statusCode, 400, "missing 'confirmPassword' property")
+
     equal(response.json().message, "body must have required property 'confirmPassword'", 'error message')
   }
 
@@ -151,6 +166,7 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
     })
 
     equal(response.statusCode, 400, "missing 'firstName' property")
+
     equal(response.json().message, "body must have required property 'firstName'", 'error message')
   }
 
@@ -167,18 +183,22 @@ test('create user | missing required field', async ({ teardown, plan, equal }) =
     })
 
     equal(response.statusCode, 400, "missing 'lastName' property")
+
     equal(response.json().message, "body must have required property 'lastName'", 'error message')
   }
 })
 
-test('create user | passwords does not match', async ({ teardown, plan, equal }) => {
+test('create user | passwords does not match', async ({ teardown, plan, equal, same }) => {
   plan(2)
 
-  const app = await buildServer()
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
 
   teardown(() => app.close())
-
-  await app.register(import('../../src/authentication/plugin.mjs'))
 
   const response = await app.inject({
     url: '/register',
@@ -192,6 +212,10 @@ test('create user | passwords does not match', async ({ teardown, plan, equal })
     }
   })
 
-  equal(response.statusCode, 400, "'password' and 'confirmPassword' do not match")
-  equal(response.json().message, "body properties 'password' and 'confirmPassword' do not match with each others", 'error message')
+  equal(response.statusCode, 400, "'password' and 'confirmPassword' vary")
+
+  same(response.json(), {
+    message: "'password' and 'confirmPassword' vary",
+    code: 'PASSWORDS_VARY'
+  })
 })

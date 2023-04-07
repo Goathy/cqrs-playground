@@ -1,7 +1,6 @@
 'use strict'
 
 import { sql } from '@databases/sqlite'
-import { randomUUID as uid } from 'node:crypto'
 import { createUser } from '../../domain/create-user.mjs'
 import { getUserByEmailHandler } from '../../queries/handlers/get-user-by-email.handler.mjs'
 import { getUserByEmailQuery } from '../../queries/implementations/get-user-by-email.query.mjs'
@@ -10,16 +9,18 @@ import { PasswordsVaryError, UserRegisteredError } from '../../errors/authentica
 
 /**
  *
- * @param {import('@databases/sqlite').DatabaseConnection} db
+ * @param {import('fastify').FastifyInstance} app
  * @param {import('../implementations/create-user.command.mjs').CreateUserCommand} command
  */
-export async function createUserHandler (db, command) {
+export async function createUserHandler (app, command) {
+  const { crypto: { uuid }, db } = app
+
   if (command instanceof CreateUserCommand === false) {
     throw new Error('invalid command')
   }
 
   const user = await getUserByEmailHandler(
-    db,
+    app,
     getUserByEmailQuery(command.email)
   )
 
@@ -35,7 +36,7 @@ export async function createUserHandler (db, command) {
     const { email, password, firstName, lastName } = await createUser(command)
     await tx.query(sql`
         INSERT INTO users (id, email, password, first_name, last_name)
-        VALUES (${uid()}, ${email}, ${password}, ${firstName}, ${lastName})
+        VALUES (${uuid()}, ${email}, ${password}, ${firstName}, ${lastName})
         `)
   })
 }

@@ -1,24 +1,9 @@
 'use strict'
 
-import fastify from 'fastify'
 import process from 'node:process'
-import errorHandler from './common/errors/error.handler.mjs'
+import { buildServer } from './server.mjs'
 
-const server = fastify({ logger: true })
-
-await server.register(import('@fastify/swagger'))
-await server.register(import('@fastify/swagger-ui'), {
-  routePrefix: '/documentation',
-  uiConfig: {
-    docExpansion: 'full'
-  }
-})
-
-server.setErrorHandler(errorHandler)
-
-await server.register(import('./route.mjs'))
-await server.register(import('./database.mjs'), { database: 'dev.sqlite' })
-await server.register(import('./authentication/plugin.mjs'), { prefix: 'authentication' })
+const server = await buildServer({ logger: true })
 
 await server.listen({ port: 3000, host: '0.0.0.0' })
 
