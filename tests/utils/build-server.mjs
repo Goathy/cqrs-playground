@@ -1,12 +1,13 @@
 'use strict'
 
 import fastify from 'fastify'
-import { TEST_DATABASE } from './prepare-database.mjs'
 
-export async function buildServer () {
-  const app = fastify()
+export async function buildTestServer (pluginsList) {
+  const server = fastify()
 
-  await app.register(import('../../src/database.mjs'), { database: TEST_DATABASE })
+  for (const [plugin, opts] of pluginsList) {
+    await server.register(plugin, opts)
+  }
 
-  return app
+  return server
 }
