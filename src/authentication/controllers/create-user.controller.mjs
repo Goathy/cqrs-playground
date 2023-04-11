@@ -16,7 +16,7 @@ export default async function (app) {
       body: createUserSchema,
       response: {
         201: {
-          description: 'user account sucessfully created',
+          description: 'user account successfully created',
           type: 'object',
           properties: {}
         },
