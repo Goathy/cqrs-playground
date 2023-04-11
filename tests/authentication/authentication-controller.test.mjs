@@ -219,5 +219,3 @@ test('create user | passwords does not match', async ({ teardown, plan, equal, s
     code: 'PASSWORDS_VARY'
   })
 })
-
-test('login user', { todo: true })
