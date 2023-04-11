@@ -9,11 +9,12 @@
     "prepare": "husky install",
     "dev": "nodemon src/main.mjs",
     "lint:fix": "standard --fix",
-    "test": "tap",
+    "test": "c8 tap --no-cov",
     "postgrator": "postgrator --driver \"sqlite3\""
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "c8": "^7.13.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "nodemon": "^2.0.22",
