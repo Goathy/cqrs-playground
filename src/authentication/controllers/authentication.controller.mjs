@@ -9,7 +9,9 @@ import { createUserSchema } from '../schemas/create-user.schema.mjs'
  * @param {import('fastify').FastifyInstance} app
  */
 export default async function (app) {
-  app.post('/register', {
+  app.route({
+    method: 'POST',
+    url: '/register',
     schema: {
       description: 'Register account',
       tags: ['authentication'],
@@ -22,11 +24,21 @@ export default async function (app) {
         },
         400: errorSchema
       }
-    }
-  }, async (req, reply) => {
-    const command = createUserCommand(req.body)
-    await createUserHandler(app, command)
+    },
+    async handler (req, reply) {
+      const command = createUserCommand(req.body)
+      await createUserHandler(app, command)
 
-    return reply.code(201).send()
+      return reply.code(201).send()
+    }
+  })
+
+  app.route({
+    method: 'POST',
+    url: '/login',
+    schema: {},
+    async handler (req, reply) {
+
+    }
   })
 }
