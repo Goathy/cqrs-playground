@@ -2,10 +2,10 @@
 
 import { sql } from '@databases/sqlite'
 import { createUser } from '../../domain/create-user.mjs'
+import { PasswordsVaryError, UserRegisteredError } from '../../errors/authentication.errors.mjs'
 import { getUserByEmailHandler } from '../../queries/handlers/get-user-by-email.handler.mjs'
 import { getUserByEmailQuery } from '../../queries/implementations/get-user-by-email.query.mjs'
 import { CreateUserCommand } from '../implementations/create-user.command.mjs'
-import { PasswordsVaryError, UserRegisteredError } from '../../errors/authentication.errors.mjs'
 
 /**
  *
@@ -33,10 +33,10 @@ export async function createUserHandler (app, command) {
   }
 
   await db.tx(async (tx) => {
-    const { email, password, firstName, lastName } = await createUser(command)
+    const { email, password, firstName, lastName } = await createUser(app, command)
     await tx.query(sql`
-        INSERT INTO users (id, email, password, first_name, last_name)
-        VALUES (${uuid()}, ${email}, ${password}, ${firstName}, ${lastName})
-        `)
+          INSERT INTO users (id, email, password, first_name, last_name)
+          VALUES (${uuid()}, ${email}, ${password}, ${firstName}, ${lastName})
+          `)
   })
 }
