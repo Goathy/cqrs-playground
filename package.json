@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "dev": "nodemon src/main.mjs",
     "lint:fix": "standard --fix",
-    "test": "c8 tap --no-cov",
+    "test": "c8 tap --no-cov --reporter=\"list\"",
     "postgrator": "postgrator --driver \"sqlite3\""
   },
   "devDependencies": {
