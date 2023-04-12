@@ -332,6 +332,14 @@
     ajv-formats "^2.1.1"
     fast-uri "^2.0.0"
 
+"@fastify/cookie@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@fastify/cookie/-/cookie-8.3.0.tgz#7d3304fcf0d11ea64ae8e02d65ae217b01fe1cf4"
+  integrity sha512-P9hY9GO11L20TnZ33XN3i0bt+3x0zaT7S0ohAzWO950E9PB2xnNhLYzPFJIGFi5AVN0yr5+/iZhWxeYvR6KCzg==
+  dependencies:
+    cookie "^0.5.0"
+    fastify-plugin "^4.0.0"
+
 "@fastify/deepmerge@^1.0.0", "@fastify/deepmerge@^1.1.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@fastify/deepmerge/-/deepmerge-1.3.0.tgz#8116858108f0c7d9fd460d05a7d637a13fe3239a"
@@ -359,6 +367,14 @@
     fast-decode-uri-component "^1.0.1"
     http-errors "2.0.0"
     mime "^3.0.0"
+
+"@fastify/session@^10.2.1":
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/@fastify/session/-/session-10.2.1.tgz#8e15b5944839d64bf6b3b4aab992a5aae100b1a9"
+  integrity sha512-NexpVWWy+dyyj2gx5VvVaox+M3TJBX1AebJPERY9cx/h4rC7gmwO3sJG3xOC2FaVzU1boFXswJ3rYGLj5yq/Ag==
+  dependencies:
+    fastify-plugin "^4.0.0"
+    safe-stable-stringify "^2.3.1"
 
 "@fastify/static@^6.0.0":
   version "6.9.0"
