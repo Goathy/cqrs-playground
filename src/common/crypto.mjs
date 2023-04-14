@@ -1,48 +1,58 @@
 'use strict'
 
-import { randomUUID } from 'node:crypto'
 import fp from 'fastify-plugin'
-import bcrypt from 'bcrypt'
-import { InternalError } from './errors/error.mjs'
 import assert from 'node:assert'
 
-export class CryptoSaltError extends InternalError {
-  constructor () {
-    super("error occur during 'salt' generation", 'CRYPTO_SALT_ERROR')
+export class CryptoBuilder {
+  #uuid
+  #salt
+  #hash
+  #compare
+
+  setUUID (generator) {
+    assert.strictEqual(typeof generator, 'function', "setUUID 'generator' is not a function")
+
+    this.#uuid = generator
+
+    return this
   }
-}
 
-export class Crypto {
-  #crypto
-  // TODO: Pass opts object to Crypto constructor to configure genSalt method
-  constructor (crypto) {
-    assert.strictEqual(typeof crypto?.randomUUID, 'function', 'crypto do not implement \'randomUUID\' method')
-    assert.strictEqual(typeof crypto?.genSalt, 'function', 'crypto do not implement \'genSalt\' method')
+  setSalt (generator) {
+    assert.strictEqual(typeof generator, 'function', "setSalt 'generator' is not a function")
 
-    this.#crypto = {
-      uuid: crypto.randomUUID,
-      genSalt: crypto.genSalt
+    this.#salt = generator
+
+    return this
+  }
+
+  setHash (generator) {
+    assert.strictEqual(typeof generator, 'function', "setHash 'generator' is not a function")
+
+    this.#hash = generator
+
+    return this
+  }
+
+  setCompare (generator) {
+    assert.strictEqual(typeof generator, 'function', "setCompare 'generator' is not a function")
+
+    this.#compare = generator
+
+    return this
+  }
+
+  build () {
+    return {
+      uuid: this.#uuid,
+      genSalt: this.#salt,
+      genHash: this.#hash,
+      compare: this.#compare
     }
   }
-
-  uuid () {
-    return this.#crypto.uuid()
-  }
-
-  async genSalt () {
-    try {
-      return await this.#crypto.genSalt()
-    } catch (error) {
-      throw new CryptoSaltError()
-    }
-  }
 }
 
-export const crypto = {
-  uuid: randomUUID,
-  genSalt: async (rounds = 10, version = 'b') => await bcrypt.genSalt(rounds, version)
-}
+export default fp(async function (app, opts) {
+  const crypto = opts.builder.build()
 
-export default fp(async function (app) {
   app.decorate('crypto', crypto)
 })

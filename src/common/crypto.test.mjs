@@ -1,44 +1,90 @@
 import { test } from 'tap'
-import { Crypto } from './crypto.mjs'
-import uuidRegex from '../../tests/utils/uuid.mjs'
-import c from 'node:crypto'
-import b from 'bcrypt'
+import { CryptoBuilder } from './crypto.mjs'
 
-test('uuid', async (t) => {
+test('compare', async (t) => {
   t.plan(1)
 
-  const crypto = new Crypto({ ...c, ...b })
-  const uuid = crypto.uuid()
+  const compareMock = () => true
 
-  t.match(uuid, uuidRegex)
+  const crypto = new CryptoBuilder().setCompare(compareMock).build()
+
+  const equal = await crypto.compare()
+
+  t.ok(equal)
 })
 
-test('genSalt', async (t) => {
-  t.plan(2)
-
-  const crypto = new Crypto({ ...c, ...b })
-  const salt = await crypto.genSalt()
-
-  t.equal(salt.length, 29)
-  t.match(salt, /^\$2b\$10\$/)
-})
-
-test('genSalt | throw error', async (t) => {
+test('compare | throw error if passwords vary', async (t) => {
   t.plan(1)
 
   try {
-    const crypto = new Crypto({ ...c, genSalt: () => { throw new Error('test') } })
-    await crypto.genSalt()
+    new CryptoBuilder().setCompare('').build()
   } catch (error) {
-    const { message, code, type } = error
-
-    t.same({ message, code, type }, {
-      message: "error occur during 'salt' generation",
-      code: 'CRYPTO_SALT_ERROR',
-      type: 'INTERNAL'
-    })
+    t.pass()
   }
 })
 
-test('genHash', { todo: true })
-test('genHash | throw error', { todo: true })
+test('addUUID', async (t) => {
+  t.plan(1)
+
+  const uuidGenMock = () => '9dd0de4a-70cd-4c83-91cc-1f1a369e006a'
+
+  const crypto = new CryptoBuilder().setUUID(uuidGenMock).build()
+
+  const uuid = '9dd0de4a-70cd-4c83-91cc-1f1a369e006a'
+
+  t.equal(crypto.uuid(), uuid)
+})
+
+test('addUUID | generator should be a function', async (t) => {
+  t.plan(1)
+
+  try {
+    new CryptoBuilder().setUUID('').build()
+  } catch (error) {
+    t.pass()
+  }
+})
+
+test('addSalt', async (t) => {
+  t.plan(1)
+
+  const saltGenMock = () => 'test_salt'
+
+  const crypto = new CryptoBuilder().setSalt(saltGenMock).build()
+
+  const salt = crypto.genSalt()
+
+  t.equal(salt, 'test_salt')
+})
+
+test('addSalt | generator should be a function', async (t) => {
+  t.plan(1)
+
+  try {
+    new CryptoBuilder().setSalt('').build()
+  } catch (error) {
+    t.pass()
+  }
+})
+
+test('genHash', async (t) => {
+  t.plan(1)
+
+  const genHashMock = () => 'test_hash'
+
+  const crypto = new CryptoBuilder().setHash(genHashMock).build()
+
+  const hash = await crypto.genHash()
+
+  t.equal(hash, 'test_hash')
+})
+
+test('genHash | generator should be a function', async (t) => {
+  t.plan(1)
+
+  try {
+    new CryptoBuilder().setHash('').build()
+  } catch (error) {
+    t.pass()
+  }
+})
