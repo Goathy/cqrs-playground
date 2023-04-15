@@ -4,6 +4,7 @@ import { errorSchema } from '../../common/errors/schema.mjs'
 import { createUserHandler } from '../commands/handlers/create-user.handler.mjs'
 import { createUserCommand } from '../commands/implementations/create-user.command.mjs'
 import { createUserSchema } from '../schemas/create-user.schema.mjs'
+import { UserNotFoundError } from '../errors/authentication.errors.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
@@ -38,7 +39,7 @@ export default async function (app) {
     url: '/login',
     schema: {},
     async handler (req, reply) {
-
+      throw new UserNotFoundError()
     }
   })
 }

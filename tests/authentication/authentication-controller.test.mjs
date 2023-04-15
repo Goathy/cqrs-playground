@@ -217,3 +217,48 @@ test('register | passwords does not match', async (t) => {
     code: 'PASSWORDS_VARY'
   })
 })
+
+test('login | user does not exists', async (t) => {
+  t.plan(3)
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
+
+  t.teardown(() => app.close())
+
+  const user = {
+    email: 'joe.doe@mail.co',
+    password: 'p4ssw0rd!1',
+    confirmPassword: 'p4ssw0rd!1',
+    firstName: 'Joe',
+    lastName: 'Doe'
+
+  }
+  {
+    const response = await app.inject({
+      url: '/register',
+      method: 'POST',
+      payload: user
+    })
+
+    t.equal(response.statusCode, 201)
+  }
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/login',
+    payload: {
+      email: user.email,
+      password: user.password
+    }
+  })
+
+  t.equal(response.statusCode, 404)
+  t.same(response.json(), {
+    message: 'user not found',
+    code: 'USER_NOT_FOUND'
+  })
+})
