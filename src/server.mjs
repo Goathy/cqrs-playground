@@ -1,6 +1,7 @@
 'use strict'
 
 import fastify from 'fastify'
+import { createUUID, createSalt, createHash, compare } from './authentication/crypto.mjs'
 
 export async function buildServer (opts) {
   const server = fastify(opts)
@@ -14,7 +15,12 @@ export async function buildServer (opts) {
   })
 
   await server.register(import('./common/errors/error.handler.mjs'))
-  await server.register(import('./common/crypto.mjs'))
+  await server.register(import('./common/crypto/crypto.mjs'), {
+    builder: (b) => b.setUUID(createUUID)
+      .setSalt(createSalt)
+      .setHash(createHash)
+      .setCompare(compare)
+  })
 
   await server.register(import('./route.mjs'))
   await server.register(import('./database.mjs'), opts.database !== undefined ? opts.database : { database: 'dev.sqlite' })
