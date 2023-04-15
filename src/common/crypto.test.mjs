@@ -1,3 +1,5 @@
+'use strict'
+
 import { test } from 'tap'
 import { CryptoBuilder } from './crypto.mjs'
 import bcrypt from 'bcrypt'
