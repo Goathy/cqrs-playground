@@ -219,6 +219,33 @@ test('register | passwords does not match', async (t) => {
 })
 
 test('login | user does not exists', async (t) => {
+  t.plan(2)
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../utils/crypto.mjs')]
+  ])
+
+  t.teardown(() => app.close())
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/login',
+    payload: {
+      email: 'joe.doe@mail.co',
+      password: 'p4ssw0rd!1'
+    }
+  })
+
+  t.equal(response.statusCode, 404)
+  t.same(response.json(), {
+    message: 'user not found',
+    code: 'USER_NOT_FOUND'
+  })
+})
+
+test('login | password does not match', async (t) => {
   t.plan(3)
   const app = await buildTestServer([
     [import('../../src/database.mjs'), { database: TEST_DATABASE }],
@@ -252,13 +279,13 @@ test('login | user does not exists', async (t) => {
     url: '/login',
     payload: {
       email: user.email,
-      password: user.password
+      password: 'password11'
     }
   })
 
-  t.equal(response.statusCode, 404)
+  t.equal(response.statusCode, 400)
   t.same(response.json(), {
-    message: 'user not found',
-    code: 'USER_NOT_FOUND'
+    message: 'wrong password',
+    code: 'WRONG_PASSWORD'
   })
 })

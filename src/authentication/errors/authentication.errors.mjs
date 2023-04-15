@@ -17,3 +17,9 @@ export class UserNotFoundError extends NotFoundError {
     super('user not found', 'USER_NOT_FOUND')
   }
 }
+
+export class WrongPasswordError extends ValidationError {
+  constructor () {
+    super('wrong password', 'WRONG_PASSWORD')
+  }
+}
