@@ -9,7 +9,7 @@ beforeEach(async () => { await prepare() })
 
 afterEach(async () => { await clean() })
 
-test('create user', async (t) => {
+test('register', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
@@ -45,7 +45,7 @@ test('create user', async (t) => {
   })
 })
 
-test('create user | user already exists', async (t) => {
+test('register | user already exists', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
@@ -89,7 +89,7 @@ test('create user | user already exists', async (t) => {
   })
 })
 
-test('create user | missing required field', async (t) => {
+test('register | missing required field', async (t) => {
   t.plan(10)
 
   const app = await buildTestServer([
@@ -186,7 +186,7 @@ test('create user | missing required field', async (t) => {
   }
 })
 
-test('create user | passwords does not match', async (t) => {
+test('register | passwords does not match', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
