@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { CryptoBuilder } from '../../src/common/crypto.mjs'
+import { CryptoBuilder } from '../../src/common/crypto/crypto.mjs'
 
 export default fp(async function (app) {
   app.decorate('crypto', new CryptoBuilder()

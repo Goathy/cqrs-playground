@@ -15,7 +15,7 @@ export async function buildServer (opts) {
   })
 
   await server.register(import('./common/errors/error.handler.mjs'))
-  await server.register(import('./common/crypto.mjs'), {
+  await server.register(import('./common/crypto/crypto.mjs'), {
     builder: (b) => b.setUUID(createUUID)
       .setSalt(createSalt)
       .setHash(createHash)

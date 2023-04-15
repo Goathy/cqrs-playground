@@ -4,7 +4,7 @@ import { test } from 'tap'
 import { CryptoBuilder } from './crypto.mjs'
 import bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
-import uuidRegex from '../../tests/utils/uuid.mjs'
+import uuidRegex from '../../../tests/utils/uuid.mjs'
 import { createHash as hash } from 'node:crypto'
 
 test('compare', async (t) => {
