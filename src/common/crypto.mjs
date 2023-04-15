@@ -52,7 +52,7 @@ export class CryptoBuilder {
 }
 
 export default fp(async function (app, opts) {
-  const crypto = opts.builder.build()
+  const crypto = opts.builder(new CryptoBuilder()).build()
 
   app.decorate('crypto', crypto)
 })
