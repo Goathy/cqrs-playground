@@ -289,3 +289,5 @@ test('login | password does not match', async (t) => {
     code: 'WRONG_PASSWORD'
   })
 })
+
+test('login', async (t) => {})
