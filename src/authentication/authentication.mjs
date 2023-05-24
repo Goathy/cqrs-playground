@@ -26,6 +26,6 @@ export default fp(async function (app) {
   }, async (request, reply) => {
     await createUser(app, request.body)
 
-    return reply.code(201).send()
+    return reply.code(201).send({})
   })
 })
