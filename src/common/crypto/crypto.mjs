@@ -17,6 +17,11 @@ function uuid () {
   return randomUUID()
 }
 
+/**
+ * @param {string} password
+ * @param {string} salt
+ * @returns {string}
+ */
 async function hash (password, salt) {
   try {
     password = createHash('sha512').update(password).digest()
@@ -26,6 +31,11 @@ async function hash (password, salt) {
   }
 }
 
+/**
+ * @param {string} hash
+ * @param {string} password
+ * @returns {string}
+ */
 async function compare (hash, password) {
   try {
     password = hash('sha512').update(password).digest()
