@@ -8,8 +8,9 @@
   "scripts": {
     "prepare": "husky install",
     "dev": "nodemon src/main.mjs",
-    "lint:fix": "standard --fix",
-    "test": "c8 tap --no-cov",
+    "lint": "standard \"src/\" \"tests/\"",
+    "lint:fix": "standard --fix \"src/\" \"tests/\"",
+    "test": "c8 tap --no-cov \"tests/\"",
     "postgrator": "postgrator --driver \"sqlite3\""
   },
   "devDependencies": {
@@ -31,7 +32,8 @@
     "bcrypt": "^5.1.0",
     "fastify": "^4.15.0",
     "fastify-plugin": "^4.5.0",
-    "fluent-json-schema": "^4.1.0"
+    "fluent-json-schema": "^4.1.0",
+    "postgrator": "^7.1.1"
   },
   "lint-staged": {
     "*.mjs": "standard",
