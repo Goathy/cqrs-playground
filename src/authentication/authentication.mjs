@@ -45,9 +45,6 @@ export default fp(async function (app) {
         throw new UserNotFoundError()
       }
 
-      // console.log('user: ', user)
-      // console.log('passwd:', password)
-
       const equals = await app.crypto.compare(user.password, password)
 
       if (equals === false) {
