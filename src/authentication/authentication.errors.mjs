@@ -1,6 +1,9 @@
-import { NotFoundError, ValidationError } from '../../common/errors/error.mjs'
+import { ValidationError } from '../common/errors/error.mjs'
 
 export class UserRegisteredError extends ValidationError {
+  /**
+   * @param {string} id
+   */
   constructor (id) {
     super(`user with id=${id} is already registered`, 'USER_ALREADY_REGISTERED')
   }
@@ -9,12 +12,6 @@ export class UserRegisteredError extends ValidationError {
 export class PasswordsVaryError extends ValidationError {
   constructor () {
     super("'password' and 'confirmPassword' vary", 'PASSWORDS_VARY')
-  }
-}
-
-export class UserNotFoundError extends NotFoundError {
-  constructor () {
-    super('user not found', 'USER_NOT_FOUND')
   }
 }
 
