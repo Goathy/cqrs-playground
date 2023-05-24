@@ -5,7 +5,7 @@ import { test } from 'tap'
 import { buildTestServer } from '../util/build-server.mjs'
 import { prepare } from '../util/prepare-database.mjs'
 
-test('create user', async (t) => {
+test('register', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
@@ -43,7 +43,7 @@ test('create user', async (t) => {
   })
 })
 
-test('create user | user already exists', async (t) => {
+test('register | user already exists', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
@@ -89,7 +89,7 @@ test('create user | user already exists', async (t) => {
   })
 })
 
-test('create user | missing required field', async (t) => {
+test('register | missing required field', async (t) => {
   t.plan(10)
 
   const app = await buildTestServer([
@@ -188,7 +188,7 @@ test('create user | missing required field', async (t) => {
   }
 })
 
-test('create user | passwords does not match', async (t) => {
+test('register | passwords does not match', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
@@ -221,3 +221,82 @@ test('create user | passwords does not match', async (t) => {
     code: 'PASSWORDS_VARY'
   })
 })
+
+test('login | user does not exists', async (t) => {
+  t.plan(2)
+
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../util/crypto.mjs')]
+  ])
+
+  await prepare(app.db)
+
+  t.teardown(() => app.close())
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/login',
+    payload: {
+      email: 'joe.doe@mail.co',
+      password: 'p4ssw0rd!1'
+    }
+  })
+
+  t.equal(response.statusCode, 404)
+  t.same(response.json(), {
+    message: 'user not found',
+    code: 'USER_NOT_FOUND'
+  })
+})
+
+test('login | password does not match', async (t) => {
+  t.plan(3)
+  const app = await buildTestServer([
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
+    [import('../../src/common/errors/error.handler.mjs')],
+    [import('../../src/authentication/plugin.mjs')],
+    [import('../util/crypto.mjs')]
+  ])
+
+  await prepare(app.db)
+
+  t.teardown(() => app.close())
+
+  const user = {
+    email: 'joe.doe@mail.co',
+    password: 'p4ssw0rd!1',
+    confirmPassword: 'p4ssw0rd!1',
+    firstName: 'Joe',
+    lastName: 'Doe'
+
+  }
+  {
+    const response = await app.inject({
+      url: '/register',
+      method: 'POST',
+      payload: user
+    })
+
+    t.equal(response.statusCode, 201)
+  }
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/login',
+    payload: {
+      email: user.email,
+      password: 'password11'
+    }
+  })
+
+  t.equal(response.statusCode, 400)
+  t.same(response.json(), {
+    message: 'wrong password',
+    code: 'WRONG_PASSWORD'
+  })
+})
+
+test('login', async (t) => {})

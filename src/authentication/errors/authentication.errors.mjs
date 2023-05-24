@@ -1,4 +1,4 @@
-import { ValidationError } from '../../common/errors/error.mjs'
+import { NotFoundError, ValidationError } from '../../common/errors/error.mjs'
 
 export class UserRegisteredError extends ValidationError {
   constructor (id) {
@@ -9,5 +9,17 @@ export class UserRegisteredError extends ValidationError {
 export class PasswordsVaryError extends ValidationError {
   constructor () {
     super("'password' and 'confirmPassword' vary", 'PASSWORDS_VARY')
+  }
+}
+
+export class UserNotFoundError extends NotFoundError {
+  constructor () {
+    super('user not found', 'USER_NOT_FOUND')
+  }
+}
+
+export class WrongPasswordError extends ValidationError {
+  constructor () {
+    super('wrong password', 'WRONG_PASSWORD')
   }
 }
