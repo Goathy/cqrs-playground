@@ -1,10 +1,9 @@
 'use strict'
 
 import fp from 'fastify-plugin'
+import { createUser } from '../user/commands/create-user.mjs'
 import { errorSchema } from './../common/errors/schema.mjs'
 import { registerUserSchema } from './authentication.schema.mjs'
-import { createUserHandler } from './commands/handlers/create-user.handler.mjs'
-import { createUserCommand } from './commands/implementations/create-user.command.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
@@ -24,9 +23,8 @@ export default fp(async function (app) {
         400: errorSchema
       }
     }
-  }, async (req, reply) => {
-    const command = createUserCommand(req.body)
-    await createUserHandler(app, command)
+  }, async (request, reply) => {
+    await createUser(app, request.body)
 
     return reply.code(201).send()
   })
