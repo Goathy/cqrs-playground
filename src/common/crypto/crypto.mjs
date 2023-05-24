@@ -1,58 +1,45 @@
 'use strict'
 
+import bcrypt from 'bcrypt'
+import { CryptoSaltError, CryptoHashError, CryptoCompareError } from './crypto.errors.mjs'
+import { randomUUID, createHash } from 'node:crypto'
 import fp from 'fastify-plugin'
-import assert from 'node:assert'
 
-export class CryptoBuilder {
-  #uuid
-  #salt
-  #hash
-  #compare
-
-  setUUID (generator) {
-    assert.strictEqual(typeof generator, 'function', "setUUID 'generator' is not a function")
-
-    this.#uuid = generator
-
-    return this
-  }
-
-  setSalt (generator) {
-    assert.strictEqual(typeof generator, 'function', "setSalt 'generator' is not a function")
-
-    this.#salt = generator
-
-    return this
-  }
-
-  setHash (generator) {
-    assert.strictEqual(typeof generator, 'function', "setHash 'generator' is not a function")
-
-    this.#hash = generator
-
-    return this
-  }
-
-  setCompare (generator) {
-    assert.strictEqual(typeof generator, 'function', "setCompare 'generator' is not a function")
-
-    this.#compare = generator
-
-    return this
-  }
-
-  build () {
-    return {
-      uuid: this.#uuid,
-      genSalt: this.#salt,
-      genHash: this.#hash,
-      compare: this.#compare
-    }
+async function salt () {
+  try {
+    return await bcrypt.genSalt(10, 'b')
+  } catch (error) {
+    throw new CryptoSaltError(error)
   }
 }
 
-export default fp(async function (app, opts) {
-  const crypto = opts.builder(new CryptoBuilder()).build()
+function uuid () {
+  return randomUUID()
+}
 
-  app.decorate('crypto', crypto)
-})
+async function hash (password, salt) {
+  try {
+    password = createHash('sha512').update(password).digest()
+    return await bcrypt.hash(password, salt)
+  } catch (error) {
+    throw new CryptoHashError(error)
+  }
+}
+
+async function compare (hash, password) {
+  try {
+    password = hash('sha512').update(password).digest()
+    return await bcrypt.compare(password, hash)
+  } catch (error) {
+    throw new CryptoCompareError(error)
+  }
+}
+
+/** @param {import('fastify').FastifyInstance} app */
+function crypto (app, _, done) {
+  app.decorate('crypto', { compare, hash, salt, uuid })
+
+  done()
+}
+
+export default fp(crypto)

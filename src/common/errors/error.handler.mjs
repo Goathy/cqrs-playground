@@ -18,6 +18,8 @@ export default fp(async function (app) {
 
       reply.code(statusCode).send(response)
     }
+
+    return error
   }
 
   function getHttpStatus (error) {

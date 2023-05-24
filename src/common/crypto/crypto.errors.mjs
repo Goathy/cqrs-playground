@@ -1,6 +1,6 @@
 'use strict'
 
-import { InternalError } from '../../common/errors/error.mjs'
+import { InternalError } from '../errors/error.mjs'
 
 export class CryptoSaltError extends InternalError {
   constructor (details) {
