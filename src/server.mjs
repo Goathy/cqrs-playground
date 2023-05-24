@@ -27,7 +27,7 @@ export async function preparePlugins (fastify) {
   await fastify.register(import('./common/crypto/crypto.mjs'))
 
   await fastify.register(import('./database.mjs'), { database: 'dev.sqlite' })
-  await fastify.register(import('./authentication/plugin.mjs'), { prefix: 'authentication' })
+  await fastify.register(import('./authentication/authentication.mjs'), { prefix: 'authentication' })
 
   return fastify
 }
