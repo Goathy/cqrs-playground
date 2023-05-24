@@ -3,7 +3,7 @@
 import { errorSchema } from './../common/errors/schema.mjs'
 import { createUserHandler } from './commands/handlers/create-user.handler.mjs'
 import { createUserCommand } from './commands/implementations/create-user.command.mjs'
-import { createUserSchema } from './schemas/create-user.schema.mjs'
+import { createUserSchema } from './create-user.schema.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app

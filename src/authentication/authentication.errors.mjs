@@ -1,4 +1,4 @@
-import { ValidationError } from '../../common/errors/error.mjs'
+import { ValidationError } from '../common/errors/error.mjs'
 
 export class UserRegisteredError extends ValidationError {
   /**
