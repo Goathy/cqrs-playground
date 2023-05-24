@@ -3,7 +3,7 @@
 import { errorSchema } from './../common/errors/schema.mjs'
 import { createUserHandler } from './commands/handlers/create-user.handler.mjs'
 import { createUserCommand } from './commands/implementations/create-user.command.mjs'
-import { createUserSchema } from './authentication.schema.mjs'
+import { registerUserSchema } from './authentication.schema.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
@@ -13,7 +13,7 @@ export default async function (app) {
     schema: {
       description: 'Register account',
       tags: ['authentication'],
-      body: createUserSchema,
+      body: registerUserSchema,
       response: {
         201: {
           description: 'user account successfully created',
