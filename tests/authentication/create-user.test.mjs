@@ -1,22 +1,20 @@
 'use strict'
 
-import { sql } from '@databases/sqlite'
-import { afterEach, beforeEach, test } from 'tap'
+import { IN_MEMORY, sql } from '@databases/sqlite'
+import { test } from 'tap'
 import { buildTestServer } from '../utils/build-server.mjs'
-import { TEST_DATABASE, clean, prepare } from '../utils/prepare-database.mjs'
-
-beforeEach(async () => { await prepare() })
-
-afterEach(async () => { await clean() })
+import { prepare } from '../utils/prepare-database.mjs'
 
 test('create user', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
-    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
     [import('../../src/authentication/plugin.mjs')],
     [import('../utils/crypto.mjs')]
   ])
+
+  await prepare(app.db)
 
   t.teardown(() => app.close())
 
@@ -49,11 +47,13 @@ test('create user | user already exists', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
-    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
     [import('../../src/common/errors/error.handler.mjs')],
     [import('../../src/authentication/plugin.mjs')],
     [import('../utils/crypto.mjs')]
   ])
+
+  await prepare(app.db)
 
   t.teardown(() => app.close())
 
@@ -93,10 +93,12 @@ test('create user | missing required field', async (t) => {
   t.plan(10)
 
   const app = await buildTestServer([
-    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
     [import('../../src/authentication/plugin.mjs')],
     [import('../utils/crypto.mjs')]
   ])
+
+  await prepare(app.db)
 
   t.teardown(() => app.close())
 
@@ -190,11 +192,13 @@ test('create user | passwords does not match', async (t) => {
   t.plan(2)
 
   const app = await buildTestServer([
-    [import('../../src/database.mjs'), { database: TEST_DATABASE }],
+    [import('../../src/database.mjs'), { database: IN_MEMORY }],
     [import('../../src/common/errors/error.handler.mjs')],
     [import('../../src/authentication/plugin.mjs')],
     [import('../utils/crypto.mjs')]
   ])
+
+  await prepare(app.db)
 
   t.teardown(() => app.close())
 
