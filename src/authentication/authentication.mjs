@@ -11,7 +11,7 @@ import { registerUserSchema } from './authentication.schema.mjs'
 export default async function (app) {
   app.post('/register', {
     schema: {
-      description: 'Register account',
+      description: 'Register user account',
       tags: ['authentication'],
       body: registerUserSchema,
       response: {
