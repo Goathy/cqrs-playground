@@ -17,6 +17,8 @@ export default fp(async function (app) {
       const response = transformToResponse(error, false)
 
       reply.code(statusCode).send(response)
+    } else {
+      return error
     }
   }
 

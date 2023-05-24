@@ -1,21 +1,24 @@
-import { exec as cexec } from 'node:child_process'
-import { promisify } from 'node:util'
-import { tmpdir } from 'node:os'
+import Postgrator from 'postgrator'
 import { join } from 'node:path'
-import connect from '@databases/sqlite'
-import { unlink } from 'node:fs/promises'
-import { randomBytes } from 'node:crypto'
+import { cwd } from 'node:process'
+import { sql } from '@databases/sqlite'
 
-const FILE_NAME = randomBytes(10).toString('hex')
-export const TEST_DATABASE = join(tmpdir(), `${FILE_NAME}.sqlite`)
+/**
+ * @param {import('@databases/sqlite').DatabaseConnection} conn
+ * @returns {Promise<void>}
+ */
+export async function prepare (conn) {
+  const migrator = new Postgrator({
+    driver: 'sqlite3',
+    schemaTable: 'migration',
+    validateChecksums: true,
+    migrationPattern: join(cwd(), 'migrations', '*'),
+    execQuery: async (query) => {
+      const results = await conn.query(sql.__dangerous__rawValue(query))
+      return { rows: results }
+    }
+  }
+  )
 
-const exec = promisify(cexec)
-
-export async function prepare () {
-  await exec(`yarn postgrator --database ${TEST_DATABASE}`)
-  return connect(TEST_DATABASE)
-}
-
-export async function clean () {
-  await unlink(TEST_DATABASE)
+  await migrator.migrate()
 }
