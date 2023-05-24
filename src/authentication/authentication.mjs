@@ -1,14 +1,15 @@
 'use strict'
 
+import fp from 'fastify-plugin'
 import { errorSchema } from './../common/errors/schema.mjs'
+import { registerUserSchema } from './authentication.schema.mjs'
 import { createUserHandler } from './commands/handlers/create-user.handler.mjs'
 import { createUserCommand } from './commands/implementations/create-user.command.mjs'
-import { registerUserSchema } from './authentication.schema.mjs'
 
 /**
  * @param {import('fastify').FastifyInstance} app
  */
-export default async function (app) {
+export default fp(async function (app) {
   app.post('/register', {
     schema: {
       description: 'Register user account',
@@ -29,4 +30,4 @@ export default async function (app) {
 
     return reply.code(201).send()
   })
-}
+})
