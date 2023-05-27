@@ -14,3 +14,9 @@ export class PasswordsVaryError extends ValidationError {
     super("'password' and 'confirmPassword' vary", 'PASSWORDS_VARY')
   }
 }
+
+export class WrongPasswordError extends ValidationError {
+  constructor () {
+    super('wrong password', 'WRONG_PASSWORD')
+  }
+}

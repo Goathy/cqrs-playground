@@ -38,7 +38,7 @@ async function hash (password, salt) {
  */
 async function compare (hash, password) {
   try {
-    password = hash('sha512').update(password).digest()
+    password = createHash('sha512').update(password).digest()
     return await bcrypt.compare(password, hash)
   } catch (error) {
     throw new CryptoCompareError(error)
