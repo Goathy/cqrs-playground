@@ -52,7 +52,7 @@ export default fp(async function (app) {
         404: errorSchema
       }
     },
-    async handler (request) {
+    async handler (request, reply) {
       const { email, password } = request.body
 
       const user = await getUserByEmail(app, email)
@@ -68,6 +68,8 @@ export default fp(async function (app) {
       }
 
       request.session.set('email', email)
+
+      return reply.code(201).send({})
     }
   })
 })
