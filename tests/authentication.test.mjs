@@ -299,4 +299,100 @@ test('login | password does not match', async ({ plan, teardown, equal, same }) 
   })
 })
 
-test('login', async (t) => {})
+test('login | establish session', async ({ plan, teardown, equal, hasProp }) => {
+  plan(3)
+
+  const app = buildServer()
+
+  teardown(() => app.close())
+
+  await app.register(import('../src/database.mjs'), { database: IN_MEMORY })
+  await app.register(import('../src/common/errors/error.handler.mjs'))
+  await app.register(import('../src/authentication/authentication.mjs'))
+  await app.register(import('../src/common/crypto/crypto.mjs'))
+
+  await prepare(app.db)
+
+  const user = {
+    email: 'joe.doe@mail.co',
+    password: 'p4ssw0rd!1',
+    confirmPassword: 'p4ssw0rd!1',
+    firstName: 'Joe',
+    lastName: 'Doe'
+  }
+
+  app.get('/test', async (request) => {
+    equal(request.session.get('email'), user.email)
+
+    return {}
+  })
+
+  {
+    const response = await app.inject({
+      url: '/register',
+      method: 'POST',
+      payload: user
+    })
+
+    equal(response.statusCode, 201)
+  }
+
+  let cookie
+  {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/login',
+      payload: {
+        email: 'joe.doe@mail.co',
+        password: 'p4ssw0rd!1'
+      },
+      headers: {
+        'x-forwarded-proto': 'https'
+      }
+    })
+
+    hasProp(response.headers, 'set-cookie')
+
+    cookie = response.headers['set-cookie']
+  }
+
+  await app.inject({
+    method: 'GET',
+    url: '/test',
+    headers: {
+      'x-forwarded-proto': 'https',
+      cookie
+    }
+  })
+})
+
+test('session shouldn\'t be established when asking endpoint', async ({ plan, teardown, pass }) => {
+  plan(1)
+
+  const app = buildServer()
+
+  teardown(() => app.close())
+
+  await app.register(import('../src/database.mjs'), { database: IN_MEMORY })
+  await app.register(import('../src/common/errors/error.handler.mjs'))
+  await app.register(import('../src/authentication/authentication.mjs'))
+  await app.register(import('../src/common/crypto/crypto.mjs'))
+
+  await prepare(app.db)
+
+  app.get('/test', async () => {
+    return {}
+  })
+
+  const response = await app.inject({
+    method: 'GET',
+    url: '/test',
+    headers: {
+      'x-forwarded-proto': 'https'
+    }
+  })
+
+  if (response.headers['set-cookie'] === undefined) {
+    pass()
+  }
+})

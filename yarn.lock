@@ -368,10 +368,10 @@
     http-errors "2.0.0"
     mime "^3.0.0"
 
-"@fastify/session@^10.2.1":
-  version "10.2.1"
-  resolved "https://registry.yarnpkg.com/@fastify/session/-/session-10.2.1.tgz#8e15b5944839d64bf6b3b4aab992a5aae100b1a9"
-  integrity sha512-NexpVWWy+dyyj2gx5VvVaox+M3TJBX1AebJPERY9cx/h4rC7gmwO3sJG3xOC2FaVzU1boFXswJ3rYGLj5yq/Ag==
+"@fastify/session@^10.3.0":
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@fastify/session/-/session-10.3.0.tgz#d42f9cb009dcf9d48644c5367432f325d828f74d"
+  integrity sha512-XQgx+QdBwGvZK8i9/nvtVGOL2q9ivf8HzxSFd6+baJZcDAhnsB1/sbsOLiiNxFBL4Gu/1QVVobYdaZjysjWvOg==
   dependencies:
     fastify-plugin "^4.0.0"
     safe-stable-stringify "^2.3.1"

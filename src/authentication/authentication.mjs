@@ -12,6 +12,9 @@ import { registerUserSchema } from './authentication.schema.mjs'
  * @param {import('fastify').FastifyInstance} app
  */
 export default fp(async function (app) {
+  await app.register(import('@fastify/cookie'))
+  await app.register(import('@fastify/session'), { secret: 'qwertyuiopasdfghjklzxcvnmqwertyu', saveUninitialized: false })
+
   app.post('/register', {
     schema: {
       description: 'Register user account',
@@ -50,6 +53,8 @@ export default fp(async function (app) {
       if (equals === false) {
         throw new WrongPasswordError()
       }
+
+      request.session.set('email', email)
     }
   })
 })
